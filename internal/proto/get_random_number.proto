@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package proto;
+
+
+service RandomNumberGenerator {
+  rpc GetRandomNumbers (RandomNumbersRequest) returns (RandomNumbersResponse) {}
+  rpc Healtcheck (google.protobuf.Empty) returns (Ok) {}
+}
+
+message RandomNumbersRequest {
+  int32 number = 1;
+  int32 max = 2;
+}
+
+message RandomNumbersResponse {
+  repeated uint32 numbers = 1;
+}
+
+message Ok {
+  string response = 1;
+}
