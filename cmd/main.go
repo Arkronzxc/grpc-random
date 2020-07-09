@@ -16,12 +16,7 @@ type Server struct {
 }
 
 func (s *Server) GetRandomNumbers(_ context.Context, req *pb.RandomNumbersRequest) (*pb.RandomNumbersResponse, error) {
-	var i int32
-	numbers := make([]uint32, 0, req.Number)
-	for ; i < req.Number; i++ {
-
-		numbers = append(numbers, s.mt.Next())
-	}
+	numbers := s.mt.NextNAsync(req.Number, req.Max)
 
 	return &pb.RandomNumbersResponse{Numbers: numbers}, nil
 }

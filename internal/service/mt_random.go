@@ -43,9 +43,9 @@ func (m *MT) twist() {
 	m.i = 0
 }
 
-func (m *MT) NextNAsync(number int32) []uint32 {
+func (m *MT) NextNAsync(number int32, max int32) []uint32 {
 	var i int32
-	resp := make(chan uint32, number)
+	resp := make(chan uint32, number%max)
 	numbers := make([]uint32, 0, number)
 	var wg sync.WaitGroup
 
