@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
@@ -16,6 +17,9 @@ type Server struct {
 }
 
 func (s *Server) GetRandomNumbers(_ context.Context, req *pb.RandomNumbersRequest) (*pb.RandomNumbersResponse, error) {
+	if err := s.validateRequest(req); err != nil {
+		return nil, err
+	}
 	numbers := s.mt.NextNAsync(req.Number, req.Max)
 
 	return &pb.RandomNumbersResponse{Numbers: numbers}, nil
@@ -23,6 +27,13 @@ func (s *Server) GetRandomNumbers(_ context.Context, req *pb.RandomNumbersReques
 
 func (s *Server) Healtcheck(context.Context, *empty.Empty) (*pb.Ok, error) {
 	return &pb.Ok{Response: "ok"}, nil
+}
+
+func (s *Server) validateRequest(req *pb.RandomNumbersRequest) error {
+	if req.Number <= 0 || req.Max <= 0 {
+		return errors.New("invalid request. Numbers and max must be positive")
+	}
+	return nil
 }
 
 func main() {
